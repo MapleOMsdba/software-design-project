@@ -3,13 +3,17 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.Python
+env/
 venv/
-.env
+ENV/
 
 # Django
-db.sqlite3
-media/
+*.log
+*.pot
+*.mo
 staticfiles/
+media/
 
 # Node
 node_modules/
@@ -22,7 +26,16 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
+*.swn
+.DS_Store
 
 # OS
-.DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Database
+*.sqlite3
+*.sqlite
+*.db
