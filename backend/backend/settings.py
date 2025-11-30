@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -129,8 +130,10 @@ INSTALLED_APPS += [
 ]
 
 # 配置CORS（解决前端联调跨域问题）
-MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+
+CORS_ALLOWED_ORIGINS = \
+    ["http://localhost:3000",
+]
 
 # 配置MySQL（临时使用SQLite，第二阶段替换）
 DATABASES = {
