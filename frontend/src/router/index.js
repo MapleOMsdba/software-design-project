@@ -3,7 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import TheWelcome from '../components/TheWelcome.vue'
 import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
-import Dashboard from '../views/Dashboard.vue' // 正确！
+import Dashboard from '../views/Dashboard.vue'
+import Permissions from '../views/Permissions.vue'
 import store from '@/store'
 const routes = [
   {
@@ -26,9 +27,15 @@ const routes = [
   {
   path: '/dashboard',
   name: 'Dashboard',
-  component: () => import('../views/Dashboard.vue'),
+  component: Dashboard,
   meta: { requiresAuth: true }
   },
+ {
+    path: '/permissions',
+    name: 'Permissions',
+    component: Permissions,
+    meta: { requiresAuth: true }
+ }
 ]
 
 const router = createRouter({
@@ -37,24 +44,20 @@ const router = createRouter({
 })
 
 // 路由守卫
+// src/router/index.js
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = store.state.isAuthenticated
+  const isAuthenticated = store.getters.isAuthenticated // ✅ 从 Vuex 获取状态
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!isAuthenticated) {
-      next('/login')
-    } else {
-      next()
-    }
-  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    // 如果目标路由需要认证
     if (isAuthenticated) {
-      next('/dashboard')
+      next() // 允许访问
     } else {
-      next()
+      next('/login') // 重定向到登录页
     }
   } else {
+    // 不需要认证的路由，直接允许访问
     next()
   }
 })
-
 export default router

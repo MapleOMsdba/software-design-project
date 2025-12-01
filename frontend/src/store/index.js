@@ -1,14 +1,26 @@
 // src/store/index.js
 import { createStore } from 'vuex'
+function loadUserInfoFromStorage() {
+  try {
+    const userInfoStr = localStorage.getItem('user_info');
+    return userInfoStr ? JSON.parse(userInfoStr) : null;
+  } catch (e) {
+    console.error("Failed to parse user info from localStorage:", e);
+    return null;
+  }
+};
 
+const initialState = {
+  user: loadUserInfoFromStorage(), // 从 localStorage 初始化 user
+  isAuthenticated: !!loadUserInfoFromStorage(), // 根据 user 是否存在判断认证状态
+  loading: false,
+  error: null,
+  systemLogs: [],
+  roles: [],
+  users: []
+};
 export default createStore({
-  state: {
-    user: null,
-    isAuthenticated: false,
-    loading: false,
-    error: null,
-    systemLogs: []
-  },
+  state: initialState,
   mutations: {
     SET_AUTHENTICATED(state, status) {
       state.isAuthenticated = status
@@ -29,6 +41,12 @@ export default createStore({
     },
     SET_SYSTEM_LOGS(state, logs) {
     state.systemLogs = logs
+  },
+    SET_ROLES(state, roles) {
+    state.roles = roles
+  },
+  SET_USERS(state, users) {
+    state.users = users
   }
   },
   actions: {
@@ -92,7 +110,33 @@ export default createStore({
       } finally {
         commit('SET_LOADING', false)
       }
+    },
+    async fetchRoles({ commit }) {
+    commit('SET_LOADING', true)
+    try {
+      const response = await api.getRoles()
+      commit('SET_ROLES', response.data)
+      return response.data
+    } catch (error) {
+      commit('SET_ERROR', error.response?.data?.error || '获取角色失败')
+      throw error
+    } finally {
+      commit('SET_LOADING', false)
     }
+  },
+    async fetchUsers({ commit }) {
+    commit('SET_LOADING', true)
+    try {
+      const response = await api.getUsers()
+      commit('SET_USERS', response.data)
+      return response.data
+    } catch (error) {
+      commit('SET_ERROR', error.response?.data?.error || '获取用户失败')
+      throw error
+    } finally {
+      commit('SET_LOADING', false)
+    }
+  }
     },
   getters: {
     currentUser: state => state.user,

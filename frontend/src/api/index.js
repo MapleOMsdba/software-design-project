@@ -42,5 +42,10 @@ export const logout = () => api.post('/logout/')
 export const healthCheck = () => api.get('/health/')
 export const getSystemLogs = () => api.get('/logs/')
 export const getUserProfile = () => api.get('/profile/')
-
+// 在现有API服务基础上添加
+export const getRoles = () => api.get('/roles/')
+export const createRole = (roleData) => api.post('/roles/', roleData)
+export const updateRole = (roleId, roleData) => api.put(`/roles/${roleId}/`, roleData)
+export const deleteRole = (roleId) => api.delete(`/roles/${roleId}/`)
+export const getUsers = () => api.get('/users/')
 export default api // 导出整个 api 实例也是可以的
